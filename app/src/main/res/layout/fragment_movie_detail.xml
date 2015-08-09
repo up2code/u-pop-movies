@@ -4,9 +4,11 @@
     tools:context="com.up2up.popmovie.DetailFragment">
 
     <LinearLayout
+        android:id="@+id/movie_layout_container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         >
 
         <LinearLayout
@@ -89,6 +91,7 @@
                     android:background="#00897B"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
+
                     />
 
             </LinearLayout>
@@ -127,7 +130,7 @@
             <ListView
                 android:id="@+id/list_movie_trailers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ListView>
+                android:layout_height="200dp"></ListView>
 
             <LinearLayout
                 android:background="#9E9E9E"

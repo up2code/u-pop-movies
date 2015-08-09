@@ -21,6 +21,8 @@
 
     <FrameLayout
         android:id="@+id/movie_detail_container"
+        android:background="#FFFFFF"
+        android:layout_marginLeft="1dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -51,6 +52,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     public static final String MOVIE_ID ="movie_id";
 
+    private LinearLayout    mContainer;
     private TextView txtReview;
     private TextView txtReleaseYear;
     private TextView txtLength;
@@ -80,24 +82,39 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        initParam();
+
 
         newView(rootView);
-
 
 
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void initParam() {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            movieId = arguments.getLong(DetailFragment.MOVIE_ID);
+
+        }
 
         Bundle bundle = getActivity().getIntent().getExtras();
 
         if(bundle != null) {
             movieId = bundle.getLong(MOVIE_ID);
-            getLoaderManager().initLoader(MOVIE_LOADER,null,this);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initParam();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER,null,this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -140,6 +157,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     }
 
     private void newView(View view) {
+        mContainer = (LinearLayout) view.findViewById(R.id.movie_layout_container);
         imgPoster = (ImageView) view.findViewById(R.id.movie_poster);
         txtTitle = (TextView) view.findViewById(R.id.movie_title);
         txtReleaseYear = (TextView) view.findViewById(R.id.movie_release_year);
@@ -175,6 +193,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         mReviewAdapter = new ReviewAdapter(getActivity(), R.layout.list_item_review, Review.EMPTY);
         listReview.setAdapter(mReviewAdapter);
         listReview.setFocusable(false);
+        mContainer.setVisibility(View.VISIBLE);
 
         checkBtnFavorite();
     }
@@ -402,6 +421,11 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
                     mReview.add(review);
                     mReviewAdapter.add(review);
                 }
+
+                if(mReview.size()==0) {
+                    txtReview.setText(getString(R.string.no_review));
+                }
+
                 Log.d(LOG_TAG,"Found "+mReview.size()+" review(s)");
                 break;
             }

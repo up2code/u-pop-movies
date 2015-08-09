@@ -1,0 +1,30 @@
+<resources xmlns:xliff="http://schemas.android.com/tools">
+    <string name="app_name">PopMovie</string>
+    <string name="title_activity_main">PopMovie</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
+
+
+    <string name="api_key">hidden_key</string>
+    <string name="title_activity_detail">Detail</string>
+
+    <string name="trailers">Trailers :</string>
+    <string name="reviews">Reviews :</string>
+    <string name="trailer">Trailer</string>
+    <string name="mark_as_favorite">MARK AS FAVORITE</string>
+    <string name="favorited">FAVORITED</string>
+
+    <string name="no_review">No review yet</string>
+
+    <string name="content_authority">com.up2up.popmovie</string>
+
+    <string name="runtime">
+        <xliff:g id="runtime">%1$s</xliff:g>min
+    </string>
+
+        <string name="vote_average">
+        <xliff:g id="vote_average">%1$1.0f</xliff:g>/10
+    </string>
+
+
+</resources>

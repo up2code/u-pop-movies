@@ -1,0 +1,5 @@
+<resources>
+    <color name="Teal">#009688</color>
+    <color name="favorite">#FFD600</color>
+    <color name="non_favorite">#00897B</color>
+</resources>

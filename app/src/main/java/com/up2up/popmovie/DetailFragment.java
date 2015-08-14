@@ -113,7 +113,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(MOVIE_LOADER,null,this);
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -129,10 +129,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
-        if (mTrailer != null && mTrailer.size()>0) {
-            mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
-        }
-
+        this.setShareIntent();
 
     }
 
@@ -257,12 +254,12 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
             public void run() {
 
                 getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
-                Log.d(LOG_TAG,"Add "+mTrailer.size()+" trailer(s)");
+                Log.d(LOG_TAG, "Add " + mTrailer.size() + " trailer(s)");
                 for(Trailer trailer : mTrailer) {
                     getActivity().getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailer.getContentValues(mMovie.getId()));
                 }
 
-                Log.d(LOG_TAG,"Add "+mReview.size()+" review(s)");
+                Log.d(LOG_TAG, "Add " + mReview.size() + " review(s)");
                 for(Review review : mReview) {
                     getActivity().getContentResolver().insert(MovieContract.ReviewEntry.CONTENT_URI, review.getContentValues(mMovie.getId()));
                 }
@@ -289,6 +286,12 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         txtLength.setText("");
         txtRate.setText("");
         txtOverview.setText("");
+    }
+
+    private void setShareIntent() {
+        if (mShareActionProvider != null && mTrailer!=null && mTrailer.size()>0) {
+            mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
+        }
     }
 
     @Override
@@ -326,9 +329,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
                 mTrailerAdapter.add(trailer);
             }
 
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
-            }
+            this.setShareIntent();
         }
     }
 
@@ -404,9 +405,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
                 }
                 Log.d(LOG_TAG,"Found "+mTrailer.size()+" trailer(s)");
 
-                if (mShareActionProvider != null && mTrailer.size()>0) {
-                    mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
-                }
+                this.setShareIntent();
 
                 break;
             }

@@ -35,6 +35,21 @@ public class Movie implements Parcelable {
     final String OWM_VOTE_COUNT = "vote_count";
     final String OWM_VIDEO = "video";
 
+    public Movie() {
+
+    }
+
+    private Movie(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        overview = in.readString();
+        voteAverage = in.readDouble();
+        releaseDate = in.readString();
+        posterPath = in.readString();
+        voteCount = in.readInt();
+        runTime = in.readInt();
+    }
+
     public long getId() {
         return id;
     }
@@ -185,4 +200,14 @@ public class Movie implements Parcelable {
         out.writeInt(voteCount);
         out.writeInt(runTime);
     }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

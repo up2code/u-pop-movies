@@ -20,18 +20,33 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         super(context, resource, objects);
     }
 
+    class ViewHolder {
+        ImageView imgPoster;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.grid_item_movie, null);
 
-        Movie movie = getItem(position);
+        ViewHolder holder;
 
-        ImageView imgPoster = (ImageView) convertView.findViewById(R.id.grid_item_poster);
+        if(convertView==null) {
+            convertView = inflater.inflate(R.layout.grid_item_movie, null);
+            holder = new ViewHolder();
+            holder.imgPoster = (ImageView) convertView.findViewById(R.id.grid_item_poster);
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
+        Movie m = getItem(position);
 
-        Picasso.with(getContext()).load(movie.getPosterPath()).into(imgPoster);
-
+        if(m!=null) {
+            Picasso.with(getContext())
+                    .load(m.getPosterPath())
+                    .into(holder.imgPoster);
+        }
 
         return convertView;
     }

@@ -18,16 +18,30 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
         super(context, resource, objects);
     }
 
+    class ViewHolder {
+        TextView txtName;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.list_item_trailer, null);
+
+        ViewHolder holder;
+        if(convertView == null) {
+            convertView = inflater.inflate(R.layout.list_item_trailer, null);
+            holder = new ViewHolder();
+            holder.txtName = (TextView) convertView.findViewById(R.id.item_trailer_name);
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         Trailer trailer = getItem(position);
 
-        TextView txtName = (TextView) convertView.findViewById(R.id.item_trailer_name);
-
-        txtName.setText(trailer.getName());
+        if(trailer != null) {
+            holder.txtName.setText(trailer.getName());
+        }
 
         return convertView;
     }

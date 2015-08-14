@@ -3,6 +3,8 @@ package com.up2up.popmovie.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.up2up.popmovie.R;
 import com.up2up.popmovie.data.MovieContract;
@@ -10,9 +12,7 @@ import com.up2up.popmovie.data.MovieContract;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-public class Movie {
+public class Movie implements Parcelable {
 
     private long id;
     private String title;
@@ -23,8 +23,6 @@ public class Movie {
     private int voteCount;
     private boolean hasVideo;
     private int runTime;
-    private List<Trailer> trailers;
-    private List<Review> reviews;
 
     final String OWM_LIST = "results";
     final String OWM_TITLE = "title";
@@ -109,22 +107,6 @@ public class Movie {
         this.runTime = runTime;
     }
 
-    public List<Trailer> getTrailers() {
-        return trailers;
-    }
-
-    public void setTrailers(List<Trailer> trailers) {
-        this.trailers = trailers;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
     public String getReleaseYear() {
         return this.getReleaseDate().subSequence(0,4).toString();
     }
@@ -185,5 +167,22 @@ public class Movie {
         values.put(MovieContract.MovieEntry.COLUMN_RUNTIME, this.getRunTime());
         values.put(MovieContract.MovieEntry.COLUMN_VOTE_COUNT,this.getVoteCount());
         return values;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int i) {
+        out.writeLong(id);
+        out.writeString(title);
+        out.writeString(overview);
+        out.writeDouble(voteAverage);
+        out.writeString(releaseDate);
+        out.writeString(posterPath);
+        out.writeInt(voteCount);
+        out.writeInt(runTime);
     }
 }

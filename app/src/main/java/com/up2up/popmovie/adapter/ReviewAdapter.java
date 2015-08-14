@@ -40,8 +40,6 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        convertView = inflater.inflate(R.layout.list_item_review, null);
-
         Review review = getItem(position);
 
         if(review != null) {

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +18,6 @@ import com.up2up.popmovie.async.FetchMovieTask;
 import com.up2up.popmovie.model.Movie;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MovieFragment extends Fragment implements
         FetchMovieTask.FetchListener {
@@ -27,9 +27,12 @@ public class MovieFragment extends Fragment implements
     }
 
     private final String LOG_TAG = this.getClass().getSimpleName();
+    private final String STATE_MOVIE = "STATE_MOVIE";
 
 
-    MovieAdapter mAdapter;
+    private MovieAdapter mAdapter;
+    private String currentSortBy;
+    private ArrayList<Movie> movieList;
 
     public MovieFragment() {
     }
@@ -41,8 +44,6 @@ public class MovieFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         GridView gridView = (GridView) rootView.findViewById(R.id.grid_movie);
-        mAdapter = new MovieAdapter(getActivity(),R.id.grid_movie,new ArrayList<Movie>());
-        gridView.setAdapter(mAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -50,6 +51,17 @@ public class MovieFragment extends Fragment implements
                 ((Callback) getActivity()).onItemSelected(movie.getId());
             }
         });
+
+        if(savedInstanceState == null || !savedInstanceState.containsKey(STATE_MOVIE)) {
+            Log.d(LOG_TAG,"onCreateView savedInstanceState = null");
+            movieList = new ArrayList<Movie>();
+        }
+        else {
+            Log.d(LOG_TAG,"onCreateView savedInstanceState not null and get stated movie");
+            movieList = savedInstanceState.getParcelableArrayList(STATE_MOVIE);
+        }
+        mAdapter = new MovieAdapter(getActivity(),R.id.grid_movie,movieList);
+        gridView.setAdapter(mAdapter);
 
         return rootView;
     }
@@ -66,23 +78,33 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(LOG_TAG, "movie list size = " + movieList.size());
+        if(currentSortBy != Utility.getPreferenceSortOrder(getActivity()))
+            fetchMovie();
+    }
 
-        fetchMovie();
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(STATE_MOVIE,movieList);
+        super.onSaveInstanceState(outState);
     }
 
     public void fetchMovie() {
+        Log.d(LOG_TAG,"start fetch movie....");
         SharedPreferences sh = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortBy = sh.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
+        currentSortBy = Utility.getPreferenceSortOrder(getActivity());
 
         FetchMovieTask fetchMovieTask = new FetchMovieTask(getActivity(),this);
-        fetchMovieTask.execute(sortBy);
+        fetchMovieTask.execute(currentSortBy);
 
     }
 
 
     @Override
-    public void onFetchComplete(List<Movie> movieList) {
+    public void onFetchComplete(ArrayList<Movie> movieList) {
         mAdapter.clear();
+
+        this.movieList = movieList;
 
         if(movieList==null)
             return;

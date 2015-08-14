@@ -21,16 +21,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
+public class FetchMovieTask extends AsyncTask<String,Void,ArrayList<Movie>> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
     private FetchListener mListener;
     private Context mContext;
 
     public interface FetchListener {
-        void onFetchComplete(List<Movie> movieList);
+        void onFetchComplete(ArrayList<Movie> movieList);
     }
 
     public FetchMovieTask(Context context, FetchListener listener) {
@@ -39,7 +38,7 @@ public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
     }
 
     @Override
-    protected List<Movie> doInBackground(String... params) {
+    protected ArrayList<Movie> doInBackground(String... params) {
         if(params[0].equals(mContext.getString(R.string.pref_sort_favorite))) {
             return fetchFavorite();
         } else {
@@ -47,7 +46,7 @@ public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
         }
     }
 
-    private List<Movie> fetchFromApi(String sortBy) {
+    private ArrayList<Movie> fetchFromApi(String sortBy) {
         String movieJsonStr;
 
         // These two need to be declared outside the try/catch
@@ -118,8 +117,8 @@ public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
         return null;
     }
 
-    private List<Movie> fetchFavorite() {
-        List<Movie> mList = new ArrayList<Movie>();
+    private ArrayList<Movie> fetchFavorite() {
+        ArrayList<Movie> mList = new ArrayList<Movie>();
         Cursor c = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
         while(c.moveToNext()) {
             mList.add(new Movie().extractFromCursor(c));
@@ -130,11 +129,11 @@ public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
 
 
 
-    private List<Movie> getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+    private ArrayList<Movie> getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
         final String OWM_LIST = "results";
 
-        List<Movie> movieList = new ArrayList<Movie>();
+        ArrayList<Movie> movieList = new ArrayList<Movie>();
 
         JSONObject movieJson = new JSONObject(movieJsonStr);
         JSONArray movieArray = movieJson.getJSONArray(OWM_LIST);
@@ -152,7 +151,7 @@ public class FetchMovieTask extends AsyncTask<String,Void,List<Movie>> {
     }
 
     @Override
-    protected void onPostExecute(List<Movie> movieList) {
+    protected void onPostExecute(ArrayList<Movie> movieList) {
         super.onPostExecute(movieList);
         mListener.onFetchComplete(movieList);
     }

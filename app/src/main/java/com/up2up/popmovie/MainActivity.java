@@ -3,6 +3,7 @@ package com.up2up.popmovie;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAIL_FRAGMENT_TAG = "DFTAG";
+    private static final String STATE_SORT = "STATE_SORT";
 
     private String mSortOrder;
     private boolean mTwoPane;
@@ -19,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.d(LOG_TAG, "mSortOrder onCreate = " + mSortOrder);
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
 
@@ -32,6 +34,10 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         else {
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
+        }
+
+        if(savedInstanceState!=null && savedInstanceState.containsKey(STATE_SORT)) {
+            mSortOrder = savedInstanceState.getString(STATE_SORT);
         }
 
     }
@@ -49,6 +55,14 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
 
             mSortOrder = sortOrder;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(mSortOrder!=null)
+            outState.putString(STATE_SORT,mSortOrder);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override

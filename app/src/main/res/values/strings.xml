@@ -13,6 +13,7 @@
     <string name="trailer">Trailer</string>
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="favorited">FAVORITED</string>
+    <string name="fail_to_get_data">Fail to get data</string>
 
     <string name="no_review">No review yet</string>
 

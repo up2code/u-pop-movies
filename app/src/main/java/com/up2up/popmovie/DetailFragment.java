@@ -335,7 +335,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         if(reviewList!=null) {
             mReviewAdapter.clear();
 
-            if(mReview.size()==0) {
+            if(reviewList.size()==0) {
                 txtReview.setText(getString(R.string.no_review));
             }
 

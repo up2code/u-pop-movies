@@ -232,11 +232,11 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
                         new String[]{String.valueOf(mMovie.getId())});
 
                 getActivity().getContentResolver().delete(MovieContract.ReviewEntry.CONTENT_URI,
-                        MovieContract.ReviewEntry.COLUMN_MOVIE_KEY+" = ?",
+                        MovieContract.ReviewEntry.COLUMN_MOVIE_KEY + " = ?",
                         new String[]{String.valueOf(mMovie.getId())});
 
                 getActivity().getContentResolver().delete(MovieContract.TrailerEntry.CONTENT_URI,
-                        MovieContract.TrailerEntry.COLUMN_MOVIE_KEY+" = ?",
+                        MovieContract.TrailerEntry.COLUMN_MOVIE_KEY + " = ?",
                         new String[]{String.valueOf(mMovie.getId())});
 
 
@@ -254,16 +254,20 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
             public void run() {
 
                 getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
+
                 Log.d(LOG_TAG, "Add " + mTrailer.size() + " trailer(s)");
-                for(Trailer trailer : mTrailer) {
-                    getActivity().getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailer.getContentValues(mMovie.getId()));
+                if(mTrailer!=null && mTrailer.size()>0) {
+                    for(Trailer trailer : mTrailer) {
+                        getActivity().getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailer.getContentValues(mMovie.getId()));
+                    }
                 }
 
                 Log.d(LOG_TAG, "Add " + mReview.size() + " review(s)");
-                for(Review review : mReview) {
-                    getActivity().getContentResolver().insert(MovieContract.ReviewEntry.CONTENT_URI, review.getContentValues(mMovie.getId()));
+                if(mReview!=null && mReview.size()>0) {
+                    for(Review review : mReview) {
+                        getActivity().getContentResolver().insert(MovieContract.ReviewEntry.CONTENT_URI, review.getContentValues(mMovie.getId()));
+                    }
                 }
-
 
                 Log.d(LOG_TAG,"Favorite movie "+mMovie.getId()+" added");
             }

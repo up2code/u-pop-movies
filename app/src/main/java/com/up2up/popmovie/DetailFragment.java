@@ -228,6 +228,8 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
             @Override
             public void run() {
+
+
                 getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                         MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{String.valueOf(mMovie.getId())});
@@ -254,7 +256,8 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
             @Override
             public void run() {
 
-                getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
+                if(mMovie!=null)
+                    getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
 
 
                 if(mTrailer!=null && mTrailer.size()>0) {

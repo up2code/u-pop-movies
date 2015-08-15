@@ -94,19 +94,21 @@ public class MovieFragment extends Fragment implements
 
     @Override
     public void onFetchComplete(ArrayList<Movie> movieList) {
-        mAdapter.clear();
+        if(getActivity() != null && isAdded()) {
+            mAdapter.clear();
 
-        this.movieList = movieList;
+            this.movieList = movieList;
 
-        if(movieList==null) {
-            Toast.makeText(getActivity(),getString(R.string.fail_to_get_data),Toast.LENGTH_SHORT).show();
-            return;
+            if (movieList == null) {
+                Toast.makeText(getActivity(), getString(R.string.fail_to_get_data), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            for (Movie movie : movieList) {
+                mAdapter.add(movie);
+            }
+            mAdapter.notifyDataSetChanged();
         }
-
-        for(Movie movie : movieList) {
-            mAdapter.add(movie);
-        }
-        mAdapter.notifyDataSetChanged();
     }
 
 }

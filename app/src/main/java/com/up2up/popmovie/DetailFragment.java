@@ -202,14 +202,16 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     }
 
     private void checkBtnFavorite() {
-        if(mIsFavorite) {
-            btnFavorite.setText(R.string.favorited);
-            btnFavorite.setBackgroundResource(R.color.favorite);
-        } else {
-            btnFavorite.setText(getString(R.string.mark_as_favorite));
-            btnFavorite.setBackgroundResource(R.color.non_favorite);
-        }
 
+        if(getActivity() != null && isAdded()) {
+            if(mIsFavorite) {
+                btnFavorite.setText(R.string.favorited);
+                btnFavorite.setBackgroundResource(R.color.favorite);
+            } else {
+                btnFavorite.setText(getString(R.string.mark_as_favorite));
+                btnFavorite.setBackgroundResource(R.color.non_favorite);
+            }
+        }
     }
 
 
@@ -291,22 +293,26 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     }
 
     private void bindView(Movie movie) {
-        txtTitle.setText(movie.getTitle());
-        txtReleaseYear.setText(movie.getReleaseYear());
-        txtLength.setText(String.valueOf(movie.getRuntimeStr(getActivity())));
-        txtRate.setText(String.valueOf(movie.getVoteStr(getActivity())));
-        txtOverview.setText(movie.getOverview());
-        btnFavorite.setVisibility(View.VISIBLE);
-        Picasso.with(getActivity()).load(movie.getPosterPath()).into(imgPoster);
+        if(getActivity() != null && isAdded()) {
+            txtTitle.setText(movie.getTitle());
+            txtReleaseYear.setText(movie.getReleaseYear());
+            txtLength.setText(String.valueOf(movie.getRuntimeStr(getActivity())));
+            txtRate.setText(String.valueOf(movie.getVoteStr(getActivity())));
+            txtOverview.setText(movie.getOverview());
+            btnFavorite.setVisibility(View.VISIBLE);
+            Picasso.with(getActivity()).load(movie.getPosterPath()).into(imgPoster);
+        }
     }
 
     private void clearView() {
-        txtTitle.setText("");
-        txtReleaseYear.setText("");
-        txtLength.setText("");
-        txtRate.setText("");
-        txtOverview.setText("");
-        btnFavorite.setVisibility(View.INVISIBLE);
+        if(getActivity() != null && isAdded()) {
+            txtTitle.setText("");
+            txtReleaseYear.setText("");
+            txtLength.setText("");
+            txtRate.setText("");
+            txtOverview.setText("");
+            btnFavorite.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setShareIntent() {
@@ -325,47 +331,53 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onFetchMovieDetailComplete(Movie movie) {
-        if(movie!=null) {
-            mMovie = movie;
-            bindView(movie);
-        }
-        else
-        {
-            Toast.makeText(getActivity(), getString(R.string.fail_to_get_data), Toast.LENGTH_SHORT).show();
+        if(getActivity() != null && isAdded()) {
+            if (movie != null) {
+                mMovie = movie;
+                bindView(movie);
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.fail_to_get_data), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
     public void onFetchReviewComplete(List<Review> reviewList) {
-        Log.d(LOG_TAG,"onFetchReviewComplete()");
-        mReview = reviewList;
-        if(reviewList!=null) {
-            mReviewAdapter.clear();
+        if(getActivity() != null && isAdded()) {
+            Log.d(LOG_TAG, "onFetchReviewComplete()");
+            mReview = reviewList;
+            if (reviewList != null) {
+                mReviewAdapter.clear();
 
-            if(reviewList.size()==0) {
-                txtReview.setText(getString(R.string.no_review));
+                if (reviewList.size() == 0 && getActivity() != null && isAdded()) {
+                    txtReview.setText(getString(R.string.no_review));
+                }
+
+                for (Review review : reviewList) {
+                    mReviewAdapter.add(review);
+                }
+
             }
-
-            for(Review review : reviewList) {
-                mReviewAdapter.add(review);
-            }
-
         }
     }
 
     @Override
     public void onFetchTrailerComplete(List<Trailer> trailerList) {
-        Log.d(LOG_TAG,"onFetchTrailerComplete()");
-        mTrailer = trailerList;
-        if(trailerList!=null) {
-            mTrailerAdapter.clear();
 
-            for(Trailer trailer : trailerList) {
-                mTrailerAdapter.add(trailer);
+        if(getActivity() != null && isAdded()) {
+            Log.d(LOG_TAG,"onFetchTrailerComplete()");
+            mTrailer = trailerList;
+            if(trailerList!=null) {
+                mTrailerAdapter.clear();
+
+                for(Trailer trailer : trailerList) {
+                    mTrailerAdapter.add(trailer);
+                }
+
+                this.setShareIntent();
             }
-
-            this.setShareIntent();
         }
+
     }
 
     @Override
@@ -405,83 +417,87 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        switch (loader.getId()) {
-            case MOVIE_LOADER : {
+        if(getActivity() != null && isAdded()) {
+            switch (loader.getId()) {
+                case MOVIE_LOADER : {
 
-                if(data.moveToFirst()) {
-                    Log.d(LOG_TAG,"Fetch from db");
-                    mIsFavorite = true;
-                    mMovie = new Movie();
-                    mMovie.extractFromCursor(data);
-                    bindView(mMovie);
+                    if(data.moveToFirst()) {
+                        Log.d(LOG_TAG,"Fetch from db");
+                        mIsFavorite = true;
+                        mMovie = new Movie();
+                        mMovie.extractFromCursor(data);
+                        bindView(mMovie);
 
-                    getLoaderManager().initLoader(TRAILER_LOADER,null,this);
-                    getLoaderManager().initLoader(REVIEW_LOADER,null,this);
-                } else {
-                    Log.d(LOG_TAG,"Fetch from api");
-                    mIsFavorite = false;
-                    fetchMovieDetail(movieId);
+                        getLoaderManager().initLoader(TRAILER_LOADER,null,this);
+                        getLoaderManager().initLoader(REVIEW_LOADER,null,this);
+                    } else {
+                        Log.d(LOG_TAG,"Fetch from api");
+                        mIsFavorite = false;
+                        fetchMovieDetail(movieId);
+                    }
+
+                    checkBtnFavorite();
+                    break;
                 }
 
-                checkBtnFavorite();
-                break;
-            }
+                case TRAILER_LOADER : {
 
-            case TRAILER_LOADER : {
+                    mTrailerAdapter.clear();
+                    mTrailer = new ArrayList<Trailer>();
+                    while(data.moveToNext()) {
+                        Trailer trailer = new Trailer();
+                        trailer.extractFromCursor(data);
+                        mTrailer.add(trailer);
+                        mTrailerAdapter.add(trailer);
+                    }
+                    Log.d(LOG_TAG,"Found "+mTrailer.size()+" trailer(s)");
 
-                mTrailerAdapter.clear();
-                mTrailer = new ArrayList<Trailer>();
-                while(data.moveToNext()) {
-                    Trailer trailer = new Trailer();
-                    trailer.extractFromCursor(data);
-                    mTrailer.add(trailer);
-                    mTrailerAdapter.add(trailer);
-                }
-                Log.d(LOG_TAG,"Found "+mTrailer.size()+" trailer(s)");
+                    this.setShareIntent();
 
-                this.setShareIntent();
-
-                break;
-            }
-
-            case REVIEW_LOADER : {
-
-                mReviewAdapter.clear();
-                mReview = new ArrayList<Review>();
-                while(data.moveToNext()) {
-                    Review review = new Review();
-                    review.extractFromCursor(data);
-                    mReview.add(review);
-                    mReviewAdapter.add(review);
+                    break;
                 }
 
-                if(mReview.size()==0) {
-                    txtReview.setText(getString(R.string.no_review));
-                }
+                case REVIEW_LOADER : {
 
-                Log.d(LOG_TAG,"Found "+mReview.size()+" review(s)");
-                break;
+                    mReviewAdapter.clear();
+                    mReview = new ArrayList<Review>();
+                    while(data.moveToNext()) {
+                        Review review = new Review();
+                        review.extractFromCursor(data);
+                        mReview.add(review);
+                        mReviewAdapter.add(review);
+                    }
+
+                    if(mReview.size()==0 && getActivity() != null && isAdded()) {
+                        txtReview.setText(getString(R.string.no_review));
+                    }
+
+                    Log.d(LOG_TAG,"Found "+mReview.size()+" review(s)");
+                    break;
+                }
             }
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(LOG_TAG,"onLoaderReset()");
-        switch (loader.getId()) {
-            case MOVIE_LOADER : {
-                clearView();
-                break;
-            }
+        if(getActivity() != null && isAdded()) {
+            switch (loader.getId()) {
+                case MOVIE_LOADER: {
+                    clearView();
+                    break;
+                }
 
-            case TRAILER_LOADER : {
-                mTrailerAdapter.clear();
-                break;
-            }
+                case TRAILER_LOADER: {
+                    mTrailerAdapter.clear();
+                    break;
+                }
 
-            case REVIEW_LOADER : {
-                mReviewAdapter.clear();
-                break;
+                case REVIEW_LOADER: {
+                    mReviewAdapter.clear();
+                    break;
+                }
             }
         }
     }

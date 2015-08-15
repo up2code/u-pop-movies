@@ -31,7 +31,7 @@ public class MovieFragment extends Fragment implements
 
 
     private MovieAdapter mAdapter;
-    private String currentSortBy;
+    private String currentSortBy = "";
     private ArrayList<Movie> movieList;
 
     public MovieFragment() {
@@ -78,19 +78,20 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "movie list size = " + movieList.size());
-        if(currentSortBy != Utility.getPreferenceSortOrder(getActivity()))
+        if(!currentSortBy.contentEquals(Utility.getPreferenceSortOrder(getActivity()))) {
+            Log.d(LOG_TAG,"onResume() start fetch movie....");
             fetchMovie();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(STATE_MOVIE,movieList);
+        if(movieList!=null)
+            outState.putParcelableArrayList(STATE_MOVIE, movieList);
         super.onSaveInstanceState(outState);
     }
 
     public void fetchMovie() {
-        Log.d(LOG_TAG,"start fetch movie....");
         SharedPreferences sh = PreferenceManager.getDefaultSharedPreferences(getActivity());
         currentSortBy = Utility.getPreferenceSortOrder(getActivity());
 

@@ -144,14 +144,19 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     }
 
     public void fetchMovieDetail(long movieId) {
-        FetchMovieDetailTask task = new FetchMovieDetailTask(getActivity(),this);
-        task.execute(movieId);
 
-        FetchReviewTask reviewTask = new FetchReviewTask(getActivity(), this);
-        reviewTask.execute(movieId);
+        if(movieId!=0) {
+            Log.d(LOG_TAG,"fetchMovieDetail()");
+            FetchMovieDetailTask task = new FetchMovieDetailTask(getActivity(),this);
+            task.execute(movieId);
 
-        FetchTrailerTask trailerTask = new FetchTrailerTask(getActivity(), this);
-        trailerTask.execute(movieId);
+            FetchReviewTask reviewTask = new FetchReviewTask(getActivity(), this);
+            reviewTask.execute(movieId);
+
+            FetchTrailerTask trailerTask = new FetchTrailerTask(getActivity(), this);
+            trailerTask.execute(movieId);
+        }
+
     }
 
     private void newView(View view) {
@@ -291,6 +296,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         txtLength.setText(String.valueOf(movie.getRuntimeStr(getActivity())));
         txtRate.setText(String.valueOf(movie.getVoteStr(getActivity())));
         txtOverview.setText(movie.getOverview());
+        btnFavorite.setVisibility(View.VISIBLE);
         Picasso.with(getActivity()).load(movie.getPosterPath()).into(imgPoster);
     }
 
@@ -300,6 +306,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         txtLength.setText("");
         txtRate.setText("");
         txtOverview.setText("");
+        btnFavorite.setVisibility(View.INVISIBLE);
     }
 
     private void setShareIntent() {
@@ -460,6 +467,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(LOG_TAG,"onLoaderReset()");
         switch (loader.getId()) {
             case MOVIE_LOADER : {
                 clearView();

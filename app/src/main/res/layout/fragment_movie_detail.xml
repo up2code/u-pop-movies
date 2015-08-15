@@ -91,6 +91,7 @@
                     android:background="#00897B"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
+                    android:visibility="invisible"
 
                     />
 

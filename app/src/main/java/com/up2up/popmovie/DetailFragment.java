@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.up2up.popmovie.adapter.ReviewAdapter;
@@ -255,15 +256,17 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
                 getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
 
-                Log.d(LOG_TAG, "Add " + mTrailer.size() + " trailer(s)");
+
                 if(mTrailer!=null && mTrailer.size()>0) {
+                    Log.d(LOG_TAG, "Add " + mTrailer.size() + " trailer(s)");
                     for(Trailer trailer : mTrailer) {
                         getActivity().getContentResolver().insert(MovieContract.TrailerEntry.CONTENT_URI, trailer.getContentValues(mMovie.getId()));
                     }
                 }
 
-                Log.d(LOG_TAG, "Add " + mReview.size() + " review(s)");
+
                 if(mReview!=null && mReview.size()>0) {
+                    Log.d(LOG_TAG, "Add " + mReview.size() + " review(s)");
                     for(Review review : mReview) {
                         getActivity().getContentResolver().insert(MovieContract.ReviewEntry.CONTENT_URI, review.getContentValues(mMovie.getId()));
                     }
@@ -311,6 +314,10 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
         if(movie!=null) {
             mMovie = movie;
             bindView(movie);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), getString(R.string.fail_to_get_data), Toast.LENGTH_SHORT).show();
         }
     }
 

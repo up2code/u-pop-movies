@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.up2up.popmovie.adapter.MovieAdapter;
 import com.up2up.popmovie.async.FetchMovieTask;
@@ -51,7 +52,6 @@ public class MovieFragment extends Fragment implements
                 ((Callback) getActivity()).onItemSelected(movie.getId());
             }
         });
-
         if(savedInstanceState == null || !savedInstanceState.containsKey(STATE_MOVIE)) {
             Log.d(LOG_TAG,"onCreateView savedInstanceState = null");
             movieList = new ArrayList<Movie>();
@@ -73,15 +73,6 @@ public class MovieFragment extends Fragment implements
 
     public void onSortOrderChanged() {
         fetchMovie();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(!currentSortBy.contentEquals(Utility.getPreferenceSortOrder(getActivity()))) {
-            Log.d(LOG_TAG,"onResume() start fetch movie....");
-            fetchMovie();
-        }
     }
 
     @Override
@@ -107,8 +98,10 @@ public class MovieFragment extends Fragment implements
 
         this.movieList = movieList;
 
-        if(movieList==null)
+        if(movieList==null) {
+            Toast.makeText(getActivity(),getString(R.string.fail_to_get_data),Toast.LENGTH_SHORT).show();
             return;
+        }
 
         for(Movie movie : movieList) {
             mAdapter.add(movie);

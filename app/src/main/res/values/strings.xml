@@ -6,7 +6,7 @@
 
 
     <string name="api_key">hidden_key</string>
-    <string name="title_activity_detail">Detail</string>
+    <string name="title_activity_detail">Movie Details</string>
 
     <string name="trailers">Trailers :</string>
     <string name="reviews">Reviews :</string>
@@ -14,6 +14,7 @@
     <string name="mark_as_favorite">MARK AS FAVORITE</string>
     <string name="favorited">FAVORITED</string>
     <string name="fail_to_get_data">Fail to get data</string>
+    <string name="please_wait">Please wait...</string>
 
     <string name="no_review">No review yet</string>
 

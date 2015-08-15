@@ -86,8 +86,11 @@ public class MovieFragment extends Fragment implements
         SharedPreferences sh = PreferenceManager.getDefaultSharedPreferences(getActivity());
         currentSortBy = Utility.getPreferenceSortOrder(getActivity());
 
+
+
         FetchMovieTask fetchMovieTask = new FetchMovieTask(getActivity(),this);
         fetchMovieTask.execute(currentSortBy);
+
 
     }
 
@@ -95,6 +98,8 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onFetchComplete(ArrayList<Movie> movieList) {
         if(getActivity() != null && isAdded()) {
+
+
             mAdapter.clear();
 
             this.movieList = movieList;
@@ -108,6 +113,8 @@ public class MovieFragment extends Fragment implements
                 mAdapter.add(movie);
             }
             mAdapter.notifyDataSetChanged();
+
+
         }
     }
 

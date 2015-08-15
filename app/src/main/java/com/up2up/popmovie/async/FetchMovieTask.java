@@ -1,5 +1,6 @@
 package com.up2up.popmovie.async;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,6 +28,8 @@ public class FetchMovieTask extends AsyncTask<String,Void,ArrayList<Movie>> {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private FetchListener mListener;
     private Context mContext;
+    private ProgressDialog mProgressDialog;
+
 
     public interface FetchListener {
         void onFetchComplete(ArrayList<Movie> movieList);
@@ -35,6 +38,15 @@ public class FetchMovieTask extends AsyncTask<String,Void,ArrayList<Movie>> {
     public FetchMovieTask(Context context, FetchListener listener) {
         this.mListener = listener;
         this.mContext = context;
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage(context.getString(R.string.please_wait));
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mProgressDialog.show();
     }
 
     @Override
@@ -153,6 +165,8 @@ public class FetchMovieTask extends AsyncTask<String,Void,ArrayList<Movie>> {
     @Override
     protected void onPostExecute(ArrayList<Movie> movieList) {
         super.onPostExecute(movieList);
+        if(mProgressDialog != null)
+            mProgressDialog.dismiss();
         mListener.onFetchComplete(movieList);
     }
 }

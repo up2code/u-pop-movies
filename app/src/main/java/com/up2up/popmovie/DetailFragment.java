@@ -293,8 +293,16 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
     }
 
     private void setShareIntent() {
-        if (mShareActionProvider != null && mTrailer!=null && mTrailer.size()>0) {
-            mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
+        Log.d(LOG_TAG,"setShareIntent()");
+        if (mShareActionProvider != null && mTrailer!=null) {
+            if(mTrailer.size()>0) {
+                mShareActionProvider.setShareIntent(createShareMovieIntent(mTrailer.get(0).getTrailerUri().toString()));
+            }
+            else {
+                Log.d(LOG_TAG,"ShareIntent not ready...");
+                //Disable shareAction when got non-trailer movie
+                mShareActionProvider.setShareIntent(new Intent());
+            }
         }
     }
 
@@ -308,8 +316,9 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onFetchReviewComplete(List<Review> reviewList) {
+        Log.d(LOG_TAG,"onFetchReviewComplete()");
+        mReview = reviewList;
         if(reviewList!=null) {
-            mReview = reviewList;
             mReviewAdapter.clear();
 
             if(mReview.size()==0) {
@@ -325,8 +334,9 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onFetchTrailerComplete(List<Trailer> trailerList) {
+        Log.d(LOG_TAG,"onFetchTrailerComplete()");
+        mTrailer = trailerList;
         if(trailerList!=null) {
-            mTrailer = trailerList;
             mTrailerAdapter.clear();
 
             for(Trailer trailer : trailerList) {

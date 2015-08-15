@@ -229,7 +229,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
             @Override
             public void run() {
 
-
+            if(mMovie!=null) {
                 getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                         MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{String.valueOf(mMovie.getId())});
@@ -246,6 +246,8 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
                 Log.d(LOG_TAG,"Favorite movie "+mMovie.getId()+" removed");
             }
+
+            }
         });
         removeBackground.run();
     }
@@ -256,8 +258,10 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
             @Override
             public void run() {
 
-                if(mMovie!=null)
+                if(mMovie!=null) {
                     getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, mMovie.getContentValues());
+                    Log.d(LOG_TAG, "Favorite movie " + mMovie.getId() + " added");
+                }
 
 
                 if(mTrailer!=null && mTrailer.size()>0) {
@@ -275,7 +279,7 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
                     }
                 }
 
-                Log.d(LOG_TAG,"Favorite movie "+mMovie.getId()+" added");
+
             }
         });
         addBackground.run();
@@ -393,7 +397,6 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(LOG_TAG,"onLoadFinished loader id = "+loader.getId());
 
         switch (loader.getId()) {
             case MOVIE_LOADER : {
@@ -457,7 +460,6 @@ public class DetailFragment extends Fragment implements FetchMovieDetailTask.Fet
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(LOG_TAG,"onLoaderReset loader id = "+loader.getId());
         switch (loader.getId()) {
             case MOVIE_LOADER : {
                 clearView();
